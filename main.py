@@ -23,34 +23,55 @@ def gif_to_images(gif_file):
 
 layout = [
     [sg.Text('分解的图片在 output 目录下')],
-    [sg.FileBrowse('选择GIF文件', file_types=(('GIF Files', '*.gif'),),
-                   key='-FILE-', target='-FILE-', enable_events=True), sg.Text('未选择', key='-FILENAME-')],
+    [sg.FileBrowse(
+        '选择GIF文件',
+        file_types=(('GIF Files', '*.gif'),),
+        key='-FILE-',
+        target='-FILE-',
+        enable_events=True),
+     sg.Text('未选择', key='-FILENAME-')],
     [sg.Image(key='-IMAGE-')],
-    [sg.Text('拖动滑块查看所有图片'), sg.Slider(range=(0, 0), orientation='h', size=(
-        20, 15), enable_events=True, key='-SLIDER-')]
+    [sg.Text('拖动滑块查看所有图片'),
+     sg.Slider(
+        range=(0, 0),
+        orientation='h',
+        size=(20, 15),
+        enable_events=True,
+        key='-SLIDER-')]
 ]
 
-window = sg.Window('GIF分解器', layout, size=(400, 200), resizable=True,
-                   finalize=True)
-images = ['']
 
-# 进入主循环
-while True:
-    event, values = window.read()
+def main():
+    window = sg.Window(
+        'GIF分解器',
+        layout,
+        size=(400, 200),
+        resizable=True,
+        finalize=True
+    )
 
-    if event == sg.WIN_CLOSED or event == 'Escape':
-        break
+    images = ['']
 
-    elif event == '-FILE-':
-        gif_file = values['-FILE-']
-        window['-FILENAME-'].update(gif_file)
-        images = gif_to_images(gif_file)
-        window['-IMAGE-'].update(filename=images[0])
-        window['-SLIDER-'].update(range=(0, len(images)-1))
+    while True:
+        event, values = window.read()
 
-    elif event == '-SLIDER-':
-        index = int(values['-SLIDER-'])
-        image_file = images[index]
-        window['-IMAGE-'].update(filename=image_file)
+        if event == sg.WIN_CLOSED or event == 'Escape':
+            break
 
-window.close()
+        elif event == '-FILE-':
+            gif_file = values['-FILE-']
+            window['-FILENAME-'].update(gif_file)
+            images = gif_to_images(gif_file)
+            window['-IMAGE-'].update(filename=images[0])
+            window['-SLIDER-'].update(range=(0, len(images)-1))
+
+        elif event == '-SLIDER-':
+            index = int(values['-SLIDER-'])
+            image_file = images[index]
+            window['-IMAGE-'].update(filename=image_file)
+
+    window.close()
+
+
+if __name__ == '__main__':
+    main()
